@@ -274,7 +274,79 @@ for(cntry in country_list) {
   
 }
 
+dir.create("figures")
 
+dir.create("figures/Europe")
+
+
+## calculations go here, not in the for loop
+
+gap_europe<- gapminder %>% 
+  
+  filter (continent == "Europe") %>% 
+  
+  filter(continent == "Europe") %>% 
+  
+  mutate(gdpTot = gdpPercap * pop)
+
+
+
+#country_list <-gap_europe$country We no longer need country list
+#for(cntry in country_list) { we are not looping at first
+
+
+print_plot <- function(cntry){ # instead we define a function that will operate on whatever we assign to cntry
+  
+  ## filter the country to plot
+  
+  gap_to_plot <-  gap_europe %>% 
+    
+    filter(country == cntry)
+  
+  ## add a print message to see what's plotting
+  
+  print(paste("Plotting", cntry))
+  
+  ## plot
+  
+  my_plot <-  ggplot(data = gap_to_plot, aes (x = year, y = gdpTot)) +
+    
+    geom_point() +
+    
+    ## add title and save
+    
+    labs(title = paste(cntry, "GDP per capita", sep = " "))
+  
+  ggsave(filename = paste("figures/Europe/", cntry, "_gdpTot.png", sep = ""), plot = my_plot)
+  
+  
+  
+} # We close the body of our function with a cruly bracket
+
+
+
+ap_europe <- gapminder %>%
+  filter(continent == "Europe") %>%
+  mutate(gdpTot = gdpPercap * pop)
+
+#define our function
+print_plot <- function(cntry) {
+  
+  ## filter the country to plot
+  gap_to_plot <- gap_europe %>%
+    filter(country == cntry)
+  
+  ## add a print message to see what's plotting
+  print(paste("Plotting", cntry))
+  
+  ## plot
+  my_plot <- ggplot(data = gap_to_plot, aes(x = year, y = gdpTot)) + 
+    geom_point() +
+    ## add title and save
+    labs(title = paste(cntry, "GDP per capita", sep = " "))
+  
+  ggsave(filename = paste("figures/Europe/", cntry, "_gdpTot.png", sep = ""), plot = my_plot)
+} 
 
 
 
