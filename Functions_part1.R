@@ -95,10 +95,34 @@ for (cntry in country_list) { # (cntry = country_list[1])
   ggsave(filename = paste("figures/Europe/", cntry, "_gdpTot.png", sep = ""), 
          plot = my_plot)
   
+  if(any(gap_to_plot$estimated == "yes")) {
+    
+    ## add a print statment just to check
+    
+    print(paste(cntry, "data are estimated"))
+    
+    my_plot <- my_plot +
+      
+      labs(subtitle = "Estimated data")
+    
+  } else {
+    
+    print(paste(cntry, "data are reported"))
+    
+    my_plot <- my_plot + 
+      
+      labs(subtitle = "Reported data")}
+    
+  
+  
+  ggsave(filename = paste("figures/Europe/", cntry, "_gdpTot.png", sep = ""), plot = my_plot)
+  
 } 
 
 
 # Working on the warning --------------------------------------------------
+
+
 
 
 
@@ -134,6 +158,57 @@ country_list <- unique(gap_europe$country)
       labs(title = paste(cntry, "_GDP per capita", sep = " "), plot = my_plot)
     
   }
+
+
+
+if (any(gap_to_plot$estimated == "yes")) { # any() will return a single TRUE or FALSE
+  
+  
+  print(paste(cntry, "data are estimated"))
+  
+}else if(any(gap_to_plot$estimated == "no")) {
+  
+  
+  print(paste (cntry, "data are reported"))
+  
+  my_plot <-  my_plot +
+    
+    labs(subtitle = "Reported data")
+  
+}
+
+dir.create("figures")
+dir.create("figures/Europe")
+
+## create a list of countries. calculations go here, not in the for loop
+
+gap_europe <- gapminder_est %>% 
+  
+  filter (continent == "Europe")%>% 
+  
+  mutate(gdpTot = gdpPercap * pop)
+
+country_list <- unique(gap_europe$country)
+
+for (cntry in country_list) {
+  
+  gap_to_plot <- gap_europe %>% 
+    
+    filter(country == cntry)
+  
+  #plot
+  
+  my_plot <- ggplot(dat = gap_to_plot, aes(x = year, y = gdpTot)) +
+    
+    labs(title= paste(cntry, "GDP per capita", sep = " "), 
+         subtitle = ifelse(any(gap_to_plot$estimated =="yes"), "Estimated data", "Reportd data"))
+  
+  
+  ggsave(filename = paste("figures/Europe/", cntry, "_gdpTot.png", sep = ""), plot = my_plot)
+  
+  
+}
+
 
 
 
