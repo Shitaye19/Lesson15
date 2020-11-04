@@ -210,6 +210,72 @@ for (cntry in country_list) {
 }
 
 
+##looping with an index and storing results
+
+for (i in 1:10) {
+  
+  print(paste("Part_", i, sep = ""))
+  
+}
+
+
+##try this code I may be able to do the calculation of CI and linearized scale simply without forloop
+gap_europe <-  gapminder_est %>% 
+  
+  filter(continent == "Europe") %>% 
+  
+  mutate(gdpTot = gdpPercap * pop)
+
+#The below that I used to calculate CI or linerized scale could be inefficint try to look an option for this
+
+gapminder$gdpTot = vector(length = nrow(gapminder))
+
+for (i in 1:nrow(gapminder)) {
+  
+  gapminder$gdpTot[i]<-gapminder$gdpPercap[i]*gapminder$pop[i]
+}
+
+
+##Functions
+
+dir.create("figures")
+dir.create("figures/Europe")
+
+gap_europe <-   gapminder %>% 
+  
+  filter(continent == "Europe") %>% 
+  
+mutate(gdpTot = gdpPercap * pop)
+
+
+country_list <-gap_europe$country
+
+for(cntry in country_list) {
+  
+  ## filter the country to plot
+  
+  gap_to_plot <-  gap_europe %>% 
+    
+    filter(country == cntry)
+  
+  print(paste("Plotting", cntry))
+  
+  ## plot
+  
+  my_plot <- (ggplot(gap_to_plot, aes(x = year, y = gdpTot)))+
+    
+    geom_point()+
+  
+  labs(title = paste(cntry, "GDP per capita", sep = " "))
+  
+  
+  ggsave(filename = paste("figures/Europe/", cntry, "_gdpTot.png", sep = ""), plot = my_plot)
+  
+  
+}
+
+
+
 
 
 
